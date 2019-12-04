@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import {Auth} from './components/Auth';
+import {Router} from './components/Router';
 
 const App: React.FC = () => {
 
     return (
         <div className="App">
-            <Auth/>
+            <Router/>
         </div>
     );
 };
