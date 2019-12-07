@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {Typography} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {useHistory} from 'react-router';
+import {authService} from '../service/auth';
+import {useAuthContext} from './AuthProvider';
 
 const useStyles = makeStyles({
     container: {
@@ -38,10 +40,36 @@ interface LoginProps {
 export const Login: React.FunctionComponent<LoginProps> = () => {
     const classes = useStyles();
 
+    const {setTokens} = useAuthContext();
+
+    const [credentials, setCredentials] = useState<{ email: string, password: string }>({
+        email: '',
+        password: '',
+    });
+
     let history = useHistory();
 
+    const onSubmit = (event?: React.FormEvent) => {
+        if (event) {
+            event.preventDefault();
+        }
+
+        authService.login(credentials)
+            .then(result => {
+                console.log('[obabichev] result', result);
+                setTokens(result.token);
+            })
+            .catch(err => {
+                console.log('[obabichev] err', err);
+            })
+    };
+
+    const onChange = ({target: {name, value}}: React.ChangeEvent<HTMLInputElement>) => {
+        setCredentials({...credentials, [name]: value})
+    };
+
     return <div className={classes.container}>
-        <form>
+        <form onSubmit={onSubmit}>
             <Grid container spacing={2}>
                 <Grid className={classes.header} item xs={12} sm={12}>
                     <img src="/images/logo.png" height="30"/>
@@ -52,9 +80,11 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
                 <Grid item xs={12} sm={12}>
                     <TextField
                         className={classes.input}
+                        onChange={onChange}
+                        value={credentials['email']}
+                        name="email"
                         required
                         label="Email"
-                        defaultValue=""
                         variant="outlined"
                         fullWidth
                     />
@@ -62,10 +92,12 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
                 <Grid item xs={12} sm={12}>
                     <TextField
                         className={classes.input}
+                        onChange={onChange}
+                        value={credentials['password']}
+                        name="password"
                         required
                         label="Password"
                         type="password"
-                        defaultValue=""
                         variant="outlined"
                         fullWidth
                     />
@@ -79,6 +111,7 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
                 </Button>
                 <div style={{flex: 1}}/>
                 <Button classes={{contained: classes.buttonText}}
+                        onClick={onSubmit}
                         variant="contained"
                         color="primary">
                     Sign in

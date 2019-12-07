@@ -1,14 +1,16 @@
 import React, {createContext, useContext} from 'react';
-import {createTokenProvider} from '../service/tokenProvider';
+import {useTokenProvider} from '../hooks/tokenProvider';
 
-type IAuthContext = ReturnType<typeof createTokenProvider>;
+type IAuthContext = ReturnType<typeof useTokenProvider>;
 
-export const AuthContext: React.Context<IAuthContext> = createContext(createTokenProvider());
+export const AuthContext: React.Context<IAuthContext> = createContext({} as IAuthContext);
 
 export const AuthProvider: React.FunctionComponent<{}> = ({children}) => {
     const tokens = localStorage.getItem('AUTH_TOKENS');
 
-    return <AuthContext.Provider value={createTokenProvider(tokens && JSON.parse(tokens))}>
+    const tokenProvider = useTokenProvider(tokens && tokens !== 'undefined' && JSON.parse(tokens));
+
+    return <AuthContext.Provider value={tokenProvider}>
         {children}
     </AuthContext.Provider>
 };
