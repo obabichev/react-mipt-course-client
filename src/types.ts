@@ -1,0 +1,12 @@
+export type User = {
+    _id: string,
+    email: string,
+    name: string,
+}
+
+export type Tokens = {
+    accessToken: string,
+    accessTokenExpiresIn: number,
+    refreshToken: string,
+    refreshTokenExpiresIn: number
+}

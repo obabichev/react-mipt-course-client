@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import {Register} from './Register';
 import {Login} from './Login';
+import {Dashboard} from './Dashboard';
 
 interface RouterProps {
 
@@ -16,7 +17,7 @@ export const Router: React.FunctionComponent<RouterProps> = () => {
         <Switch>
             <Route path="/register" component={Register}/>
             <Route path="/login" component={Login}/>
-            <Route path="/">
+            <Route path="/" component={Dashboard}>
             </Route>
         </Switch>
     </BrowserRouter>;
