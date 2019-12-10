@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import {useHistory} from 'react-router';
 import {authService} from '../service/auth';
 import {useAuthContext} from './AuthProvider';
+import {GoogleAuth} from './GoogleAuth';
 
 const useStyles = makeStyles({
     container: {
@@ -56,7 +57,6 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
 
         authService.login(credentials)
             .then(result => {
-                console.log('[obabichev] result', result);
                 setTokens(result.token);
             })
             .catch(err => {
@@ -116,6 +116,9 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
                         color="primary">
                     Sign in
                 </Button>
+            </div>
+            <div>
+                <GoogleAuth/>
             </div>
         </form>
     </div>;

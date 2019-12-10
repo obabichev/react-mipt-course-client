@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button} from '@material-ui/core';
 import {useAuthContext} from './AuthProvider';
+import {Logout} from './Logout';
 
 interface DashboardProps {
 
@@ -10,7 +10,7 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
     const {logout} = useAuthContext();
 
     return <div>
-        <Button variant="contained" onClick={logout}>Logout</Button>
+        <Logout/>
         Dashboard
     </div>;
 };

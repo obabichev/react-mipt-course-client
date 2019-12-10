@@ -3,8 +3,6 @@ import {authService} from '../service/auth';
 import {useState} from 'react';
 
 export const useTokenProvider = (initTokens: Tokens | null = null) => {
-    console.log('[obabichev] useTokenProvider.initTokens', initTokens);
-
     const [_tokens, _setTokens] = useState(initTokens);
 
     function isAccessTokenExpire() {
@@ -13,7 +11,7 @@ export const useTokenProvider = (initTokens: Tokens | null = null) => {
 
     function isRefreshTokenExpire() {
         if (_tokens)
-        return _tokens && Date.now() > _tokens.refreshTokenExpiresIn - 10000;
+            return _tokens && Date.now() > _tokens.refreshTokenExpiresIn - 10000;
     }
 
     function isLoggedIn() {

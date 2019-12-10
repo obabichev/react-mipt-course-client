@@ -43,8 +43,20 @@ const updateTokens = (refreshToken: string) => {
         .then(response => response.json());
 };
 
+const loginByGoogleIdToken = (idToken: string) => {
+    return fetch('/auth/google', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id_token: idToken})
+    })
+        .then(response => response.json());
+};
+
 export const authService = {
     register,
     login,
-    updateTokens
+    updateTokens,
+    loginByGoogleIdToken
 };
