@@ -5,8 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import {Typography} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import {useHistory} from 'react-router';
-import {authService} from '../service/auth';
-import {useAuthContext} from './AuthProvider';
+import {useDispatch} from 'react-redux';
+import {register} from '../reducers/auth';
 
 const useStyles = makeStyles({
     container: {
@@ -39,7 +39,7 @@ export const Register: React.FunctionComponent<SignUpProps> = () => {
     const classes = useStyles();
 
     let history = useHistory();
-    const {setTokens} = useAuthContext();
+    const dispatch = useDispatch();
 
     const [credentials, setCredentials] = useState<{ name: string, email: string, password: string, checkPassword: string }>({
         name: '',
@@ -57,13 +57,7 @@ export const Register: React.FunctionComponent<SignUpProps> = () => {
             event.preventDefault();
         }
 
-        authService.register(credentials)
-            .then(result => {
-                setTokens(result.token);
-            })
-            .catch(err => {
-                console.log('[obabichev] err', err);
-            })
+        dispatch(register(credentials));
     };
 
     return <div className={classes.container}>

@@ -1,17 +1,21 @@
 import React, {useEffect} from 'react';
-import {useAuthContext} from './AuthProvider';
 import {useGoogleAuth} from '../hooks/google';
+import {useDispatch} from 'react-redux';
+import {loginAction} from '../reducers/auth';
 
 export const GoogleAuth: React.FunctionComponent<{}> = () => {
 
-    const {setTokens} = useAuthContext();
-
     const googleAuth = useGoogleAuth();
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (googleAuth && googleAuth.isSignedIn()) {
             googleAuth.getTokens()
-                .then(tokens => setTokens(tokens.token));
+                .then(tokens => {
+                    localStorage.setItem('AUTH_TOKENS', JSON.stringify(tokens));
+                    dispatch(loginAction(tokens.user))
+                });
         }
     }, [googleAuth]);
 
@@ -24,7 +28,10 @@ export const GoogleAuth: React.FunctionComponent<{}> = () => {
 
         if (googleAuth) {
             googleAuth.signIn()
-                .then((tokens) => setTokens(tokens.token))
+                .then((tokens) => {
+                    localStorage.setItem('AUTH_TOKENS', JSON.stringify(tokens));
+                    dispatch(loginAction(tokens.user))
+                })
                 .catch((err: any) => console.log('[obabichev] onError2', err))
         }
     };

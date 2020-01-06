@@ -16,7 +16,7 @@ const register = async (credentials: { name: string, email: string, password: st
     return response.json();
 };
 
-const login = async (credentials: { email: string, password: string; }) => {
+const login = async (credentials: { email: string, password: string; }): Promise<{ user: User, token: Tokens }> => {
     const response = await fetch('/auth/login', {
         method: 'POST',
         headers: {
@@ -43,7 +43,7 @@ const updateTokens = (refreshToken: string) => {
         .then(response => response.json());
 };
 
-const loginByGoogleIdToken = (idToken: string) => {
+const loginByGoogleIdToken = (idToken: string): Promise<{ user: User, token: Tokens }> => {
     return fetch('/auth/google', {
         method: 'POST',
         headers: {

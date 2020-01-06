@@ -5,9 +5,9 @@ import {Typography} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {useHistory} from 'react-router';
-import {authService} from '../service/auth';
-import {useAuthContext} from './AuthProvider';
 import {GoogleAuth} from './GoogleAuth';
+import {useDispatch} from 'react-redux';
+import {login} from '../reducers/auth';
 
 const useStyles = makeStyles({
     container: {
@@ -41,7 +41,7 @@ interface LoginProps {
 export const Login: React.FunctionComponent<LoginProps> = () => {
     const classes = useStyles();
 
-    const {setTokens} = useAuthContext();
+    const dispatch = useDispatch();
 
     const [credentials, setCredentials] = useState<{ email: string, password: string }>({
         email: '',
@@ -55,13 +55,7 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
             event.preventDefault();
         }
 
-        authService.login(credentials)
-            .then(result => {
-                setTokens(result.token);
-            })
-            .catch(err => {
-                console.log('[obabichev] err', err);
-            })
+        dispatch(login(credentials));
     };
 
     const onChange = ({target: {name, value}}: React.ChangeEvent<HTMLInputElement>) => {

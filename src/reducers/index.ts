@@ -1,9 +1,13 @@
 import {combineReducers} from 'redux';
 
-import {board} from './board.reducer';
+import board from './board';
+import auth from './auth';
 
-const rootReduce = combineReducers({
-    board
+const rootReducer = combineReducers({
+    board,
+    auth
 });
 
-export default rootReduce;
+export type RootState = ReturnType<typeof rootReducer>
+
+export default rootReducer;
