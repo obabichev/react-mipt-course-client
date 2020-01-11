@@ -1,9 +1,13 @@
 import {Tokens} from '../types';
 import {authService} from '../service/auth';
-import {useState} from 'react';
 
-export const useTokenProvider = (initTokens: Tokens | null = null) => {
-    const [_tokens, _setTokens] = useState(initTokens);
+export const tokenProvider = (initTokens: Tokens | null = null) => {
+    // const [_tokens, _setTokens] = useState(initTokens);
+    let _tokens = initTokens;
+
+    const _setTokens = (tokens: Tokens | null) => {
+        _tokens = tokens;
+    };
 
     function isAccessTokenExpire() {
         return _tokens && Date.now() > _tokens.accessTokenExpiresIn - 10000;
@@ -26,20 +30,25 @@ export const useTokenProvider = (initTokens: Tokens | null = null) => {
     async function updateTokens(refreshToken: string) {
         const tokens = await authService.updateTokens(refreshToken);
 
+        console.log('[obabichev] new tokens', tokens);
+
         _setTokens(tokens);
     }
 
     async function getAccessToken() {
+        console.log('[obabichev] 1 _tokens', _tokens);
         if (!_tokens) {
             return null;
         }
 
         if (isRefreshTokenExpire()) {
+            console.log('[obabichev] refresh expired', 123);
             _setTokens(null);
             return null;
         }
 
         if (isAccessTokenExpire()) {
+            console.log('[obabichev] access expired', 234);
             await updateTokens(_tokens.refreshToken);
         }
 

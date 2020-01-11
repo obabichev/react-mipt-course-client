@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {fetchDictionaries} from '../../reducers/dictionaries';
 import {RootState} from '../../reducers';
 import {Board} from '../../types';
+import {createBoard} from '../../reducers/board';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -51,7 +52,7 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
             ...board,
             [name]: (name === 'key') ? value.toUpperCase() : value
         });
-    }, [setBoard]);
+    }, [setBoard, board]);
 
     const onChange = ({target: {name, value}}: ChangeEvent<{ name: string, value: unknown }>) => updateField(name, value);
 
@@ -71,6 +72,12 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
             updateField('category', categories[0]);
         }
     }, [categories]);
+
+    const onCreateBoard = () => {
+        dispatch(createBoard(board));
+    };
+
+    console.log('[obabichev] board', board);
 
     return <Modal open={open} onClose={onClose} className={classes.modal}>
         <Paper className={classes.paper}>
@@ -126,7 +133,8 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
                 </Grid>
                 <Grid item xs={12} sm={3}>
                     <Button variant="contained"
-                            color="primary">
+                            color="primary"
+                            onClick={onCreateBoard}>
                         Create
                     </Button>
                 </Grid>
