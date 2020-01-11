@@ -15,7 +15,6 @@ export const fetchBoardsList = () => (dispatch: Dispatch) => {
     fetch('/board')
         .then(r => r.json())
         .then(data => {
-            console.log('[obabichev] data', data);
             dispatch(boardsList(data));
         })
         .catch(error => {

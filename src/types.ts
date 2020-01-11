@@ -17,7 +17,7 @@ export type Dictionary = {
 }
 
 export type Board = {
-    __id: string;
+    _id: string;
     title: string;
     key?: string;
     owner?: User;

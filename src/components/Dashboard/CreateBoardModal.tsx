@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {createStyles, Modal, Theme, Typography} from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Paper from '@material-ui/core/Paper';
@@ -7,21 +7,10 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
-const categories = [
-    {
-        title: 'A',
-        value: 10
-    },
-    {
-        title: 'B',
-        value: 20
-    },
-    {
-        title: 'C',
-        value: 30
-    }
-];
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchDictionaries} from '../../reducers/dictionaries';
+import {RootState} from '../../reducers';
+import {Board} from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,6 +39,39 @@ interface CreateBoardModalProps {
 export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = ({open, onClose}) => {
     const classes = useStyles();
 
+    const [board, setBoard] = useState<Partial<Board>>({
+        title: '',
+        key: '',
+    });
+
+    const categories = useSelector((state: RootState) => state.dictionaries.categories);
+
+    const updateField = useCallback((name: string, value: any) => {
+        setBoard({
+            ...board,
+            [name]: (name === 'key') ? value.toUpperCase() : value
+        });
+    }, [setBoard]);
+
+    const onChange = ({target: {name, value}}: ChangeEvent<{ name: string, value: unknown }>) => updateField(name, value);
+
+    const onChangeCategory = ({target: {value}}: ChangeEvent<{ value: unknown; }>) => updateField(
+        'category',
+        categories.find(category => category.key === value)
+    );
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchDictionaries('categories'));
+    }, []);
+
+    useEffect(() => {
+        if (!board.category && categories.length > 0) {
+            updateField('category', categories[0]);
+        }
+    }, [categories]);
+
     return <Modal open={open} onClose={onClose} className={classes.modal}>
         <Paper className={classes.paper}>
             <Grid container spacing={2}>
@@ -59,8 +81,8 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
                 <Grid item xs={12} sm={6}>
                     <TextField
                         className={classes.input}
-                        onChange={() => null}
-                        value={'Fixed'}
+                        onChange={onChange}
+                        value={board.title}
                         name="title"
                         required
                         label="Title"
@@ -72,8 +94,8 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
                 <Grid item xs={12} sm={6}>
                     <TextField
                         className={classes.input}
-                        onChange={() => null}
-                        value={'KEY'}
+                        onChange={onChange}
+                        value={board.key?.toUpperCase()}
                         name="key"
                         required
                         label="Key"
@@ -86,13 +108,14 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={10}
-                        onChange={() => null}
+                        name="category"
+                        value={board?.category?.key || ''}
+                        onChange={onChangeCategory}
                         fullWidth
                     >
                         {categories.map((category) => (
-                            <MenuItem key={category.value} value={category.value}>
-                                {category.title}
+                            <MenuItem key={category.key} value={category.key}>
+                                {category.value}
                             </MenuItem>
                         ))}
                     </Select>

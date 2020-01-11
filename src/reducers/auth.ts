@@ -19,7 +19,6 @@ export const login = (credentials: { email: string, password: string }) => (disp
     authService.login(credentials)
         .then(result => {
             localStorage.setItem('AUTH_TOKENS', JSON.stringify(result));
-            console.log('[obabichev] result', result);
             dispatch(loginAction(result.user));
         })
         .catch(err => {
@@ -31,7 +30,6 @@ export const register = (credentials: { name: string, email: string, password: s
     authService.register(credentials)
         .then(result => {
             localStorage.setItem('AUTH_TOKENS', JSON.stringify(result));
-            console.log('[obabichev] result', result);
             dispatch(loginAction(result.user));
         })
         .catch(err => {

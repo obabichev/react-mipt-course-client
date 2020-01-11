@@ -19,7 +19,6 @@ export const useTokenProvider = (initTokens: Tokens | null = null) => {
     }
 
     function setTokens(tokens: Tokens) {
-        console.log('[obabichev] useTokenProvider::_setTokens.tokens', tokens);
         _setTokens(tokens);
         localStorage.setItem('AUTH_TOKENS', JSON.stringify(tokens));
     }

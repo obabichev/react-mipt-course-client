@@ -12,8 +12,6 @@ interface ProjectsTableProps {
 }
 
 export const BoardsTable: React.FunctionComponent<ProjectsTableProps> = ({boards}) => {
-    console.log('[obabichev] boards', boards);
-
     return <Table>
         <TableHead>
             <TableRow>
@@ -24,7 +22,7 @@ export const BoardsTable: React.FunctionComponent<ProjectsTableProps> = ({boards
             </TableRow>
         </TableHead>
         <TableBody>
-            {boards.map(board => (<TableRow key={board.__id}>
+            {boards.map(board => (<TableRow key={board._id}>
                 <TableCell align="left">
                     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                         <div>
