@@ -13,7 +13,7 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
-    const [openModal, setOpenModal] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
 
     const dispatch = useDispatch();
 

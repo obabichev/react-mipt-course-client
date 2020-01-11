@@ -11,10 +11,15 @@ export type Tokens = {
     refreshTokenExpiresIn: number
 }
 
+export type Dictionary = {
+    key: string;
+    value: string;
+}
+
 export type Board = {
     __id: string;
     title: string;
     key?: string;
     owner?: User;
-    category?: string;
+    category?: Dictionary;
 }

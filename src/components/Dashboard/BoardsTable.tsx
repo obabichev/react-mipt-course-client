@@ -12,6 +12,8 @@ interface ProjectsTableProps {
 }
 
 export const BoardsTable: React.FunctionComponent<ProjectsTableProps> = ({boards}) => {
+    console.log('[obabichev] boards', boards);
+
     return <Table>
         <TableHead>
             <TableRow>
@@ -44,7 +46,7 @@ export const BoardsTable: React.FunctionComponent<ProjectsTableProps> = ({boards
                         </div>
                     </div>
                 </TableCell>
-                <TableCell align="left">{board.category}</TableCell>
+                <TableCell align="left">{board.category && board.category.value}</TableCell>
             </TableRow>))}
         </TableBody>
     </Table>
