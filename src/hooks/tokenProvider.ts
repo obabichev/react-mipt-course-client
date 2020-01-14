@@ -1,69 +1,195 @@
-import {Tokens} from '../types';
-import {authService} from '../service/auth';
+import {useEffect, useState} from 'react';
 
-export const tokenProvider = (initTokens: Tokens | null = null) => {
-    // const [_tokens, _setTokens] = useState(initTokens);
-    let _tokens = initTokens;
+export type AuthProviderConfig<T> = {
+    onUpdateToken?: (token: T) => Promise<T | null>;
+    localStorageKey?: string;
+    accessTokenKey?: string;
+    accessTokenExpireField?: string;
+};
 
-    const _setTokens = (tokens: Tokens | null) => {
-        _tokens = tokens;
+export const createAuthProvider = <T>({
+                                          onUpdateToken,
+                                          localStorageKey = 'REACT_TOKEN_AUTH_KEY',
+                                          accessTokenKey,
+                                          accessTokenExpireField
+                                      }: AuthProviderConfig<T>) => {
+    const localStorageData = localStorage.getItem(localStorageKey);
+
+    const tp = createTokenProvider({
+        initToken: localStorageData && JSON.parse(localStorageData) || null,
+        localStorageKey,
+        accessTokenKey,
+        accessTokenExpireField,
+        onUpdateToken
+    });
+
+    let listeners: ((newLogged: boolean) => void)[] = [];
+
+    const notify = () => {
+        const isLogged = tp.isLoggedIn();
+        listeners.forEach(l => l(isLogged));
     };
 
-    function isAccessTokenExpire() {
-        return _tokens && Date.now() > _tokens.accessTokenExpiresIn - 10000;
-    }
+    const subscribe = (listener: (logged: boolean) => void) => {
+        listeners.push(listener);
+    };
 
-    function isRefreshTokenExpire() {
-        if (_tokens)
-            return _tokens && Date.now() > _tokens.refreshTokenExpiresIn - 10000;
-    }
+    const unsubscribe = (listener: (logged: boolean) => void) => {
+        listeners = listeners.filter(l => l !== listener);
+    };
 
-    function isLoggedIn() {
-        return _tokens && !isRefreshTokenExpire();
-    }
+    const updateToken = (newTokens: T) => {
+        tp.setToken(newTokens);
+        notify();
+    };
 
-    function setTokens(tokens: Tokens) {
-        _setTokens(tokens);
-        localStorage.setItem('AUTH_TOKENS', JSON.stringify(tokens));
-    }
+    const logout = () => {
+        tp.setToken(null);
+        notify();
+    };
 
-    async function updateTokens(refreshToken: string) {
-        const tokens = await authService.updateTokens(refreshToken);
+    const authFetch = async (input: RequestInfo, init?: RequestInit): Promise<Response> => {
+        const token = await tp.getToken();
 
-        console.log('[obabichev] new tokens', tokens);
+        if (!token) {
+            notify();
+        }
 
-        _setTokens(tokens);
-    }
+        init = init || {};
 
-    async function getAccessToken() {
-        console.log('[obabichev] 1 _tokens', _tokens);
-        if (!_tokens) {
+        init.headers = {
+            ...init.headers,
+            Authorization: `Bearer ${token}`
+        };
+
+        return fetch(input, init);
+    };
+
+    const useAuth = () => {
+        const [isLogged, setIsLogged] = useState(tp.isLoggedIn());
+
+        const listener = (newIsLogged: boolean) => {
+            setIsLogged(newIsLogged);
+        };
+
+        useEffect(() => {
+            subscribe(listener);
+            return () => {
+                unsubscribe(listener);
+            }
+        }, [listener]);
+
+        return [isLogged] as [typeof isLogged];
+    };
+
+    return [useAuth, authFetch, updateToken, logout] as [typeof useAuth, typeof authFetch, typeof updateToken, typeof logout];
+};
+
+type TokenProviderConfig<T> = {
+    initToken: T | null;
+    localStorageKey: string;
+    accessTokenKey?: string;
+    accessTokenExpireField?: string;
+    onUpdateToken?: (token: T) => Promise<T | null>;
+}
+
+const createTokenProvider = <T>({initToken, localStorageKey, accessTokenKey, accessTokenExpireField, onUpdateToken}: TokenProviderConfig<T>) => {
+    let _token = initToken;
+
+    const jwtExp = (token?: any): number | null => {
+        if (!(typeof token === 'string')) {
             return null;
         }
 
-        if (isRefreshTokenExpire()) {
-            console.log('[obabichev] refresh expired', 123);
-            _setTokens(null);
+        const split = token.split('.');
+
+        if (split.length < 2) {
             return null;
         }
 
-        if (isAccessTokenExpire()) {
-            console.log('[obabichev] access expired', 234);
-            await updateTokens(_tokens.refreshToken);
+        try {
+            const jwt = JSON.parse(atob(token.split('.')[1]));
+            if (jwt && jwt.exp && Number.isFinite(jwt.exp)) {
+                return jwt.exp * 10000;
+            } else {
+                return null;
+            }
+        } catch (e) {
+            return null;
         }
 
-        return _tokens.accessToken;
-    }
+    };
 
-    function logout() {
-        _setTokens(null);
-        localStorage.removeItem('AUTH_TOKENS');
-    }
+    const getExpire = (token: T | null) => {
+        if (!token) {
+            return null;
+        }
+
+        if (accessTokenExpireField) {
+            // @ts-ignore
+            return token[accessTokenExpireField]
+        }
+
+        if (accessTokenKey) {
+            // @ts-ignore
+            const exp = jwtExp(token[accessTokenKey]);
+            if (exp) {
+                return exp;
+            }
+        }
+
+        return jwtExp(token);
+    };
+
+    const isExpired = (exp?: number) => {
+        if (!exp) {
+            return false;
+        }
+
+        return Date.now() > exp - 10000;
+    };
+
+    const checkExpiry = async () => {
+        if (_token && isExpired(getExpire(_token))) {
+            const newToken = onUpdateToken ? await onUpdateToken(_token) : null;
+
+            if (newToken) {
+                _token = newToken;
+            } else {
+                localStorage.removeItem(localStorageKey);
+                _token = null;
+            }
+        }
+    };
+
+    const getToken = async () => {
+        await checkExpiry();
+
+        if (accessTokenKey) {
+            // @ts-ignore
+            return _token[accessTokenKey];
+        }
+
+        return _token;
+    };
+
+    const isLoggedIn = () => {
+        // await checkExpiry();
+        return !!_token
+    };
+
+    const setToken = (token: T | null) => {
+        if (token) {
+            localStorage.setItem(localStorageKey, JSON.stringify(token));
+        } else {
+            localStorage.removeItem(localStorageKey);
+        }
+        _token = token;
+    };
 
     return {
-        getAccessToken,
+        getToken,
         isLoggedIn,
-        setTokens,
-        logout
+        setToken
     }
 };

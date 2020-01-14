@@ -1,8 +1,7 @@
 import {createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
 import {Board} from '../types';
-import {getAccessToken} from '../utils/localStorage';
-import {tokenProvider} from '../hooks/tokenProvider';
 import {RootState} from './index';
+import {authFetch} from '../App';
 
 const board = createSlice({
     name: 'board',
@@ -21,28 +20,18 @@ export const fetchBoardsList = () => (dispatch: Dispatch) => {
             dispatch(boardsList(data));
         })
         .catch(error => {
-            console.log('[obabichev] error', error);
+            console.log('error', error);
         })
 };
 
 export const createBoard = (board: Partial<Board>) => (dispatch: Dispatch, getState: () => RootState) => {
-    const tokens = getAccessToken();
-
-    if (!tokens) {
-        console.error('NO TOKENS');
-    }
-
-    tokenProvider(tokens).getAccessToken()
-        .then(accessToken => {
-            return fetch('/board', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`
-                },
-                body: JSON.stringify(board)
-            })
-        })
+    authFetch('/board', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify(board)
+    })
         .then(r => {
             if (r.status !== 200) {
                 throw r.statusText;
@@ -54,7 +43,7 @@ export const createBoard = (board: Partial<Board>) => (dispatch: Dispatch, getSt
             dispatch(boardsList([...boards, data]));
         })
         .catch(error => {
-            console.log('[obabichev] error', error);
+            console.log('error', error);
         })
 };
 

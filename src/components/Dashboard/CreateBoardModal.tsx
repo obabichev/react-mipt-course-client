@@ -77,8 +77,6 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
         dispatch(createBoard(board));
     };
 
-    console.log('[obabichev] board', board);
-
     return <Modal open={open} onClose={onClose} className={classes.modal}>
         <Paper className={classes.paper}>
             <Grid container spacing={2}>

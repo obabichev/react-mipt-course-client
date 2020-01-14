@@ -5,8 +5,8 @@ import {authService} from '../service/auth';
 export const useGoogleAuth = () => {
     const [googleAuth, setGoogleAuth] = useState<{
         isSignedIn: () => boolean,
-        getTokens: () => Promise<{ user: User, token: Tokens }>,
-        signIn: () => Promise<{ user: User, token: Tokens }>,
+        getTokens: () => Promise<Tokens>,
+        signIn: () => Promise<Tokens>,
         signOut: () => Promise<void>
     } | null>(null);
 
@@ -56,7 +56,7 @@ export const useGoogleAuth = () => {
                             googleAuthToState(res);
                         })
                         .catch((err: any) => {
-                            console.log('[obabichev] err', err);
+                            console.log('err', err);
                         })
                 } else {
                     //@ts-ignore

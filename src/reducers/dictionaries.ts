@@ -23,7 +23,7 @@ export const fetchDictionaries = (name: 'categories') => (dispatch: Dispatch) =>
             dispatch(setDictionary({name, items}));
         })
         .catch(error => {
-            console.log('[obabichev] error', error);
+            console.log('error', error);
         })
 };
 
