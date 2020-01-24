@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react';
 import {useGoogleAuth} from '../hooks/google';
 import {useDispatch} from 'react-redux';
-import {loginAction} from '../reducers/auth';
-import {updateToken} from '../App';
+import {login} from '../App';
 
 export const GoogleAuth: React.FunctionComponent<{}> = () => {
 
@@ -14,9 +13,7 @@ export const GoogleAuth: React.FunctionComponent<{}> = () => {
         if (googleAuth && googleAuth.isSignedIn()) {
             googleAuth.getTokens()
                 .then(tokens => {
-                    // localStorage.setItem('AUTH_TOKENS', JSON.stringify(tokens));
-                    updateToken(tokens)
-                    // dispatch(loginAction(tokens.user))
+                    login(tokens)
                 });
         }
     }, [googleAuth]);
@@ -31,7 +28,7 @@ export const GoogleAuth: React.FunctionComponent<{}> = () => {
         if (googleAuth) {
             googleAuth.signIn()
                 .then((tokens) => {
-                    updateToken(tokens)
+                    login(tokens)
                 })
                 .catch((err: any) => console.log('err', err))
         }

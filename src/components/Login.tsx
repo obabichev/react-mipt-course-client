@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {Typography} from '@material-ui/core';
@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import {useHistory} from 'react-router';
 import {GoogleAuth} from './GoogleAuth';
 import {useDispatch} from 'react-redux';
-import {login} from '../reducers/auth';
+import {loginThunk} from '../reducers/auth';
 
 const useStyles = makeStyles({
     container: {
@@ -55,7 +55,7 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
             event.preventDefault();
         }
 
-        dispatch(login(credentials));
+        dispatch(loginThunk(credentials));
     };
 
     const onChange = ({target: {name, value}}: React.ChangeEvent<HTMLInputElement>) => {

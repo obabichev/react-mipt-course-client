@@ -1,7 +1,7 @@
 import {createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
 import {User} from '../types';
 import {authService} from '../service/auth';
-import {updateToken} from '../App';
+import {login} from '../App';
 
 const initialState = {user: null, isLoggedIn: false} as { user: User | null, isLoggedIn: boolean; };
 
@@ -16,10 +16,10 @@ const auth = createSlice({
 
 export const {logoutAction, loginAction} = auth.actions;
 
-export const login = (credentials: { email: string, password: string }) => (dispatch: Dispatch) => {
+export const loginThunk = (credentials: { email: string, password: string }) => (dispatch: Dispatch) => {
     authService.login(credentials)
         .then(result => {
-            updateToken(result);
+            login(result);
         })
         .catch(err => {
             console.log('err', err);
@@ -29,7 +29,7 @@ export const login = (credentials: { email: string, password: string }) => (disp
 export const register = (credentials: { name: string, email: string, password: string, checkPassword: string; }) => (dispatch: Dispatch) => {
     authService.register(credentials)
         .then(result => {
-            updateToken(result);
+            login(result);
         })
         .catch(err => {
             console.log('err', err);
