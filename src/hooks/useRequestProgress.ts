@@ -6,6 +6,7 @@ export const useRequestProgress = <T extends Array<any>, U>(fn: (...args: T) => 
 
     const _callback = async (...args: T) => {
         setLoading(true);
+        setError(null);
 
         try {
             await new Promise((r) => setTimeout(r, 2000));
