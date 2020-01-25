@@ -10,7 +10,7 @@ const register = async (credentials: { name: string, email: string, password: st
     });
 
     if (response.status !== 200) {
-        throw new Error(await response.json());
+        throw await response.json();
     }
 
     return response.json();
@@ -26,7 +26,7 @@ const login = async (credentials: { email: string, password: string; }): Promise
     });
 
     if (response.status !== 200) {
-        throw new Error(await response.json());
+        throw await response.json();
     }
 
     return response.json();

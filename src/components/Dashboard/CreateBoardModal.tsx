@@ -109,7 +109,7 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
                                 <em>None</em>
                             </MenuItem>
                             {boardIcons.map(icon => (
-                                <MenuItem value={icon.key}>
+                                <MenuItem key={icon.key} value={icon.key}>
                                     <img alt="icon" src={icon.value} width={20} height={20}/>
                                 </MenuItem>
                             ))}
