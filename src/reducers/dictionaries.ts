@@ -4,8 +4,9 @@ import {Dictionary} from '../types';
 const dictionaries = createSlice({
     name: 'dictionaries',
     initialState: {
-        categories: []
-    } as { categories: Dictionary[] },
+        categories: [],
+        'board-icons': []
+    } as { categories: Dictionary[], 'board-icons': Dictionary[] },
     reducers: {
         setDictionary: ((state, {payload: {name, items}}: PayloadAction<{ name: string, items: Dictionary[] }>) => ({
             ...state,
@@ -16,7 +17,7 @@ const dictionaries = createSlice({
 
 export const {setDictionary} = dictionaries.actions;
 
-export const fetchDictionaries = (name: 'categories') => (dispatch: Dispatch) => {
+export const fetchDictionaries = (name: 'categories' | 'board-icons') => (dispatch: Dispatch) => {
     fetch(`/dictionaries/${name}`)
         .then(r => r.json())
         .then(items => {

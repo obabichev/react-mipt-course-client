@@ -25,8 +25,9 @@ export const BoardsTable: React.FunctionComponent<ProjectsTableProps> = ({boards
             {boards.map(board => (<TableRow key={board._id}>
                 <TableCell align="left">
                     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                        <div>
-                            <img alt="project-icon" width={24} height={24} src="/project-icons/1.svg"/>
+                        <div style={{width: 24, height: 24}}>
+                            {board?.icon?.value &&
+                            <img alt="project-icon" width={24} height={24} src={board.icon.value}/>}
                         </div>
                         <div style={{marginLeft: 5}}>
                             {board.title}

@@ -12,6 +12,8 @@ import {fetchDictionaries} from '../../reducers/dictionaries';
 import {RootState} from '../../reducers';
 import {Board} from '../../types';
 import {createBoard} from '../../reducers/board';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -46,6 +48,7 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
     });
 
     const categories = useSelector((state: RootState) => state.dictionaries.categories);
+    const boardIcons = useSelector((state: RootState) => state.dictionaries['board-icons']);
 
     const updateField = useCallback((name: string, value: any) => {
         setBoard({
@@ -61,10 +64,16 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
         categories.find(category => category.key === value)
     );
 
+    const onChangeIcon = ({target: {value}}: ChangeEvent<{ value: unknown; }>) => updateField(
+        'icon',
+        boardIcons.find(icon => icon.key === value)
+    );
+
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(fetchDictionaries('categories'));
+        dispatch(fetchDictionaries('board-icons'));
     }, [dispatch]);
 
     useEffect(() => {
@@ -72,6 +81,12 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
             updateField('category', categories[0]);
         }
     }, [categories, board.category, updateField]);
+
+    useEffect(() => {
+        if (!board.icon && boardIcons.length > 0) {
+            updateField('icon', boardIcons[0]);
+        }
+    }, [boardIcons, board.icon, updateField]);
 
     const onCreateBoard = () => {
         dispatch(createBoard(board));
@@ -83,7 +98,25 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
                 <Grid item xs={12} sm={12}>
                     <Typography variant="h5">Create Board</Typography>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={2} sm={2}>
+                    <FormControl>
+                        <InputLabel id="demo-customized-select-label">Icon</InputLabel>
+                        <Select
+                            value={board?.icon?.key || ''}
+                            onChange={onChangeIcon}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            {boardIcons.map(icon => (
+                                <MenuItem value={icon.key}>
+                                    <img alt="icon" src={icon.value} width={20} height={20}/>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={11} sm={5}>
                     <TextField
                         className={classes.input}
                         onChange={onChange}
@@ -96,7 +129,7 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
                         margin="dense"
                     />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={11} sm={5}>
                     <TextField
                         className={classes.input}
                         onChange={onChange}

@@ -22,4 +22,5 @@ export type Board = {
     key?: string;
     owner?: User;
     category?: Dictionary;
+    icon?: Dictionary
 }
