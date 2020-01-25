@@ -65,13 +65,13 @@ export const CreateBoardModal: React.FunctionComponent<CreateBoardModalProps> = 
 
     useEffect(() => {
         dispatch(fetchDictionaries('categories'));
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         if (!board.category && categories.length > 0) {
             updateField('category', categories[0]);
         }
-    }, [categories]);
+    }, [categories, board.category, updateField]);
 
     const onCreateBoard = () => {
         dispatch(createBoard(board));

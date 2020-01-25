@@ -19,7 +19,7 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
 
     useEffect(() => {
         dispatch(fetchBoardsList());
-    }, []);
+    }, [dispatch]);
 
     const boards = useSelector((state: RootState) => state.board);
 

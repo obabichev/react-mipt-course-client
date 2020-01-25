@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {Typography} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {useHistory} from 'react-router';
-import {GoogleAuth} from './GoogleAuth';
 import {useDispatch} from 'react-redux';
 import {loginThunk} from '../reducers/auth';
+import {RedirectGoogleAuth} from './RedirectGoogleAuth';
 
 const useStyles = makeStyles({
     container: {
@@ -32,6 +32,9 @@ const useStyles = makeStyles({
         marginTop: '12px',
         flexDirection: 'row',
         display: 'flex'
+    },
+    googleAuthContainer: {
+        marginTop: '32px',
     }
 });
 
@@ -66,7 +69,7 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
         <form onSubmit={onSubmit}>
             <Grid container spacing={2}>
                 <Grid className={classes.header} item xs={12} sm={12}>
-                    <img src="/images/logo.png" height="30"/>
+                    <img alt="logo" src="/images/logo.png" height="30"/>
                 </Grid>
                 <Grid className={classes.header} item xs={12} sm={12}>
                     <Typography variant="h5">Sign in</Typography>
@@ -111,8 +114,8 @@ export const Login: React.FunctionComponent<LoginProps> = () => {
                     Sign in
                 </Button>
             </div>
-            <div>
-                <GoogleAuth/>
+            <div className={classes.googleAuthContainer}>
+                <RedirectGoogleAuth/>
             </div>
         </form>
     </div>;

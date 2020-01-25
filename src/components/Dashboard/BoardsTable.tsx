@@ -26,7 +26,7 @@ export const BoardsTable: React.FunctionComponent<ProjectsTableProps> = ({boards
                 <TableCell align="left">
                     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                         <div>
-                            <img width={24} height={24} src="/project-icons/1.svg"/>
+                            <img alt="project-icon" width={24} height={24} src="/project-icons/1.svg"/>
                         </div>
                         <div style={{marginLeft: 5}}>
                             {board.title}
@@ -37,7 +37,7 @@ export const BoardsTable: React.FunctionComponent<ProjectsTableProps> = ({boards
                 <TableCell align="left">
                     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                         <div>
-                            <UserIcon name={board.owner && board.owner.name || ''}/>
+                            <UserIcon name={board?.owner?.name || ''}/>
                         </div>
                         <div style={{marginLeft: 5}}>
                             {board.owner && board.owner.name}

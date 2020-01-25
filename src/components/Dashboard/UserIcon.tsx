@@ -6,7 +6,7 @@ interface UserIconProps {
 
 export const UserIcon: React.FunctionComponent<UserIconProps> = ({name}) => {
     const abbr = name.split(' ')
-        .map(word => word && word[0].toUpperCase() || '')
+        .map(word => word[0]?.toUpperCase() || '')
         .filter((item, index) => index < 2)
         .join('');
 

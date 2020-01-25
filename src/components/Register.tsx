@@ -64,7 +64,7 @@ export const Register: React.FunctionComponent<SignUpProps> = () => {
         <form onSubmit={onSubmit}>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
-                    <img src="/images/logo.png" height="30"/>
+                    <img alt="logo" src="/images/logo.png" height="30"/>
                 </Grid>
                 <Grid item xs={12} sm={12}>
                     <Typography variant="h5">Create your Mini Jira Account</Typography>
