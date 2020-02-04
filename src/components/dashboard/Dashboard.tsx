@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Logout} from '../Logout';
+import {Logout} from '../auth/Logout';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchBoardsList} from '../../reducers/board';
 import {BoardsTable} from './BoardsTable';

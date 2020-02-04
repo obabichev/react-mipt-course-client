@@ -1,8 +1,8 @@
 import React from 'react';
 import {Redirect, RouteProps} from 'react-router';
-import {splitParams} from '../utils/splitParams';
-import {authService} from '../service/auth';
-import {login} from '../App';
+import {splitParams} from '../../utils/splitParams';
+import {authService} from '../../service/auth';
+import {login} from '../../App';
 import {LinearProgress} from '@material-ui/core';
 
 export class Google extends React.Component<RouteProps, { failed: boolean }> {

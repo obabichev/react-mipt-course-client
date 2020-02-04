@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from '@material-ui/core';
-import {logout} from '../App';
+import {logout} from '../../App';
 
 export const Logout: React.FunctionComponent<{}> = () => {
 

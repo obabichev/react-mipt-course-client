@@ -4,11 +4,11 @@ import {
     Switch,
     Route, Redirect,
 } from 'react-router-dom';
-import {Register} from './Register';
-import {Login} from './Login';
-import {Dashboard} from './Dashboard/Dashboard';
+import {Register} from './auth/Register';
+import {Login} from './auth/Login';
+import {Dashboard} from './dashboard/Dashboard';
 import {useAuth} from '../App';
-import {Google} from './Google';
+import {Google} from './auth/Google';
 
 interface RouterProps {
 
