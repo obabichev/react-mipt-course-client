@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {fetchDictionaries} from '../../reducers/dictionaries';
 import {RootState} from '../../reducers';
 import {Board} from '../../types';
-import {createBoard} from '../../reducers/board';
+import {createBoard} from '../../reducers/boards';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 

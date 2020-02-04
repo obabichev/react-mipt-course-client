@@ -3,15 +3,15 @@ import {Board} from '../types';
 import {RootState} from './index';
 import {authFetch} from '../App';
 
-const board = createSlice({
-    name: 'board',
+const boards = createSlice({
+    name: 'boards',
     initialState: [] as Board[],
     reducers: {
         boardsList: ((state, action: PayloadAction<Board[]>) => action.payload)
     }
 });
 
-export const {boardsList} = board.actions;
+export const {boardsList} = boards.actions;
 
 export const fetchBoardsList = () => (dispatch: Dispatch) => {
     fetch('/board')
@@ -39,7 +39,7 @@ export const createBoard = (board: Partial<Board>) => (dispatch: Dispatch, getSt
             return r.json()
         })
         .then(data => {
-            const boards = getState().board;
+            const boards = getState().boards;
             dispatch(boardsList([...boards, data]));
         })
         .catch(error => {
@@ -47,4 +47,4 @@ export const createBoard = (board: Partial<Board>) => (dispatch: Dispatch, getSt
         })
 };
 
-export default board.reducer;
+export default boards.reducer;

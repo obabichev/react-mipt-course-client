@@ -6,9 +6,10 @@ import {
 } from 'react-router-dom';
 import {Register} from './auth/Register';
 import {Login} from './auth/Login';
-import {Dashboard} from './dashboard/Dashboard';
+import {DashboardPage} from './dashboard/DashboardPage';
 import {useAuth} from '../App';
 import {Google} from './auth/Google';
+import {BoardPage} from './board/BoardPage';
 
 interface RouterProps {
 
@@ -25,7 +26,8 @@ export const Router: React.FunctionComponent<RouterProps> = () => {
             <Redirect to="/login"/>
         </Switch>}
         {logged && <Switch>
-            <Route path="/dashboard" component={Dashboard} exact/>
+            <Route path="/dashboard" component={DashboardPage} exact/>
+            <Route path="/board/:id" component={BoardPage} exact/>
             <Redirect to="/dashboard"/>
         </Switch>}
     </BrowserRouter>;

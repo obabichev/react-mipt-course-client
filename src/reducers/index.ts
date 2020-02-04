@@ -1,11 +1,11 @@
 import {combineReducers} from 'redux';
 
-import board from './board';
+import boards from './boards';
 import auth from './auth';
 import dictionaries from './dictionaries';
 
 const rootReducer = combineReducers({
-    board,
+    boards,
     auth,
     dictionaries
 });

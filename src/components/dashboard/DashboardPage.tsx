@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Logout} from '../auth/Logout';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchBoardsList} from '../../reducers/board';
+import {fetchBoardsList} from '../../reducers/boards';
 import {BoardsTable} from './BoardsTable';
 import {RootState} from '../../reducers';
 import PageContainer from '../common/PageContainer';
@@ -12,7 +12,7 @@ interface DashboardProps {
 
 }
 
-export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
+export const DashboardPage: React.FunctionComponent<DashboardProps> = () => {
     const [openModal, setOpenModal] = useState(false);
 
     const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export const Dashboard: React.FunctionComponent<DashboardProps> = () => {
         dispatch(fetchBoardsList());
     }, [dispatch]);
 
-    const boards = useSelector((state: RootState) => state.board);
+    const boards = useSelector((state: RootState) => state.boards);
 
     return <PageContainer>
         <Logout/>
