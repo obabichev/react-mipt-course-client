@@ -19,7 +19,7 @@ export type Dictionary = {
 export type Board = {
     _id: string;
     title: string;
-    key?: string;
+    key: string;
     owner?: User;
     category?: Dictionary;
     icon?: Dictionary

@@ -7,13 +7,14 @@ import {RootState} from '../../reducers';
 import PageContainer from '../common/PageContainer';
 import {Button} from '@material-ui/core';
 import {CreateBoardModal} from './CreateBoardModal';
+import {useModalRender} from '../../hooks/useModalRender';
 
 interface DashboardProps {
 
 }
 
 export const DashboardPage: React.FunctionComponent<DashboardProps> = () => {
-    const [openModal, setOpenModal] = useState(false);
+    const modal = useModalRender();
 
     const dispatch = useDispatch();
 
@@ -26,10 +27,11 @@ export const DashboardPage: React.FunctionComponent<DashboardProps> = () => {
     return <PageContainer>
         <Logout/>
 
-        <Button onClick={() => setOpenModal(true)}>Add Board</Button>
+        {modal(
+            <CreateBoardModal/>,
+            open => <Button onClick={open}>Add Board</Button>
+        )}
 
         <BoardsTable boards={boards}/>
-
-        <CreateBoardModal open={openModal} onClose={() => setOpenModal(false)}/>
     </PageContainer>;
 };
