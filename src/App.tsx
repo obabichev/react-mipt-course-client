@@ -10,7 +10,9 @@ import {createAuthProvider} from 'react-token-auth';
 export const [useAuth, authFetch, login, logout] =
     createAuthProvider<{ accessToken: string, refreshToken: string }>({
         accessTokenKey: 'accessToken',
-        onUpdateToken: (token) => authService.updateTokens(token.refreshToken)
+        onUpdateToken: (token) => {
+            return authService.updateTokens(token.refreshToken)
+        }
     });
 
 const App: React.FC = () => {

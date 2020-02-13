@@ -22,5 +22,14 @@ export type Board = {
     key: string;
     owner?: User;
     category?: Dictionary;
-    icon?: Dictionary
+    icon?: Dictionary;
+    tasks: Task[]
+}
+
+export type Task = {
+    _id: string;
+    title: string;
+    description: string;
+    subtasks: string[];
+    parent?: string;
 }
