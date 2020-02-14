@@ -1,6 +1,7 @@
 import {createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
 import {Board, DetailedBoard, Task} from '../types';
 import {authFetch} from '../App';
+import {BOARD_LOADING, finishLoading, startLoading} from './loading';
 
 const normalizeTasks = (tasks?: Task[]) => {
     if (!tasks) {
@@ -17,7 +18,10 @@ const board = createSlice({
     name: 'board',
     initialState: null as { board: Board, tasks: { [key in string]: Task } } | null,
     reducers: {
-        boardAction: ((state, action: PayloadAction<DetailedBoard>) => {
+        boardAction: ((state, action: PayloadAction<DetailedBoard | null>) => {
+            if (!action.payload) {
+                return null;
+            }
             return {
                 board: {
                     ...action.payload,
@@ -52,6 +56,8 @@ export const {boardAction} = board.actions;
 
 export const fetchBoard = (boardId: string) => (dispatch: Dispatch) => {
     console.log('[obabichev] fetch board', boardId);
+    dispatch(startLoading(BOARD_LOADING));
+    dispatch(boardAction(null));
     fetch(`/board/${boardId}`)
         .then(r => r.json())
         .then(data => {
@@ -59,6 +65,9 @@ export const fetchBoard = (boardId: string) => (dispatch: Dispatch) => {
         })
         .catch(error => {
             console.log('error', error);
+        })
+        .finally(() => {
+            dispatch(finishLoading(BOARD_LOADING))
         })
 };
 

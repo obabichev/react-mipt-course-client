@@ -8,6 +8,8 @@ import PageContainer from '../common/PageContainer';
 import {Button} from '@material-ui/core';
 import {CreateBoardModal} from './CreateBoardModal';
 import {useModalRender} from '../../hooks/useModalRender';
+import {useLoading} from '../../hooks/useLoading';
+import {BOARDS_LIST_LOADING} from '../../reducers/loading';
 
 interface DashboardProps {
 
@@ -15,6 +17,7 @@ interface DashboardProps {
 
 export const DashboardPage: React.FunctionComponent<DashboardProps> = () => {
     const modal = useModalRender();
+    const isLoading = useLoading([BOARDS_LIST_LOADING]);
 
     const dispatch = useDispatch();
 
@@ -24,7 +27,7 @@ export const DashboardPage: React.FunctionComponent<DashboardProps> = () => {
 
     const boards = useSelector((state: RootState) => state.boards);
 
-    return <PageContainer>
+    return <PageContainer loading={isLoading}>
         <Logout/>
 
         {modal(

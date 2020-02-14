@@ -12,12 +12,17 @@ import {Board} from '../../types';
 import {createBoard} from '../../reducers/boards';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import {ProgressWrapper} from '../common/ProgressWrapper';
+import {useLoading} from '../../hooks/useLoading';
+import {CREATE_BOARD_LOADING} from '../../reducers/loading';
 
 export const CreateBoardModal = () => {
     const [board, setBoard] = useState<Partial<Board>>({
         title: '',
         key: '',
     });
+
+    const isLoading = useLoading([CREATE_BOARD_LOADING]);
 
     const categories = useSelector((state: RootState) => state.dictionaries.categories);
     const boardIcons = useSelector((state: RootState) => state.dictionaries['board-icons']);
@@ -64,78 +69,80 @@ export const CreateBoardModal = () => {
         dispatch(createBoard(board));
     };
 
-    return <Grid container spacing={2}>
-        <Grid item xs={12} sm={12}>
-            <Typography variant="h5">Create Board</Typography>
-        </Grid>
-        <Grid item xs={2} sm={2}>
-            <FormControl>
-                <InputLabel id="demo-customized-select-label">Icon</InputLabel>
+    return <ProgressWrapper loading={isLoading}>
+        <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+                <Typography variant="h5">Create Board</Typography>
+            </Grid>
+            <Grid item xs={2} sm={2}>
+                <FormControl>
+                    <InputLabel id="demo-customized-select-label">Icon</InputLabel>
+                    <Select
+                        value={board?.icon?.key || ''}
+                        onChange={onChangeIcon}
+                    >
+                        <MenuItem value="">
+                            <em>None</em>
+                        </MenuItem>
+                        {boardIcons.map(icon => (
+                            <MenuItem key={icon.key} value={icon.key}>
+                                <img alt="icon" src={icon.value} width={20} height={20}/>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={11} sm={5}>
+                <TextField
+                    onChange={onChange}
+                    value={board.title}
+                    name="title"
+                    required
+                    label="Title"
+                    variant="outlined"
+                    fullWidth
+                    margin="dense"
+                />
+            </Grid>
+            <Grid item xs={11} sm={5}>
+                <TextField
+                    onChange={onChange}
+                    value={board.key?.toUpperCase()}
+                    name="key"
+                    required
+                    label="Key"
+                    variant="outlined"
+                    fullWidth
+                    margin="dense"
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
                 <Select
-                    value={board?.icon?.key || ''}
-                    onChange={onChangeIcon}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    name="category"
+                    value={board?.category?.key || ''}
+                    onChange={onChangeCategory}
+                    fullWidth
                 >
-                    <MenuItem value="">
-                        <em>None</em>
-                    </MenuItem>
-                    {boardIcons.map(icon => (
-                        <MenuItem key={icon.key} value={icon.key}>
-                            <img alt="icon" src={icon.value} width={20} height={20}/>
+                    {categories.map((category) => (
+                        <MenuItem key={category.key} value={category.key}>
+                            {category.value}
                         </MenuItem>
                     ))}
                 </Select>
-            </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+            </Grid>
+            <Grid item xs={12} sm={9}>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+                <Button variant="contained"
+                        color="primary"
+                        onClick={onCreateBoard}>
+                    Create
+                </Button>
+            </Grid>
         </Grid>
-        <Grid item xs={11} sm={5}>
-            <TextField
-                onChange={onChange}
-                value={board.title}
-                name="title"
-                required
-                label="Title"
-                variant="outlined"
-                fullWidth
-                margin="dense"
-            />
-        </Grid>
-        <Grid item xs={11} sm={5}>
-            <TextField
-                onChange={onChange}
-                value={board.key?.toUpperCase()}
-                name="key"
-                required
-                label="Key"
-                variant="outlined"
-                fullWidth
-                margin="dense"
-            />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                name="category"
-                value={board?.category?.key || ''}
-                onChange={onChangeCategory}
-                fullWidth
-            >
-                {categories.map((category) => (
-                    <MenuItem key={category.key} value={category.key}>
-                        {category.value}
-                    </MenuItem>
-                ))}
-            </Select>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-        </Grid>
-        <Grid item xs={12} sm={3}>
-            <Button variant="contained"
-                    color="primary"
-                    onClick={onCreateBoard}>
-                Create
-            </Button>
-        </Grid>
-    </Grid>;
+    </ProgressWrapper>;
 };
