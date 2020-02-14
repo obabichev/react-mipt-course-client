@@ -11,24 +11,15 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../reducers';
-import {find} from 'lodash';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import {useHistory} from 'react-router';
 
 const ExpansionPanelSummary = withStyles({
-    // root: {
-    //     backgroundColor: 'rgba(0, 0, 0, .03)',
-    //     borderBottom: '1px solid rgba(0, 0, 0, .125)',
-    //     marginBottom: -1,
-    //     minHeight: 56,
-    //     '&$expanded': {
-    //         minHeight: 56,
-    //     },
-    // },
-    // content: {
-    //     '&$expanded': {
-    //         margin: '12px 0',
-    //     },
-    // },
-    // expanded: {},
+    root: {
+        "&:hover": {
+            backgroundColor: "#EBECF0"
+        }
+    }
 })(MuiExpansionPanelSummary);
 
 const ExpansionPanelDetails = withStyles(theme => ({
@@ -38,11 +29,23 @@ const ExpansionPanelDetails = withStyles(theme => ({
     },
 }))(MuiExpansionPanelDetails);
 
+const useStyles = makeStyles({
+    link: {
+        color: 'rgb(107, 119, 140)',
+        marginRight: '8px',
+        "&:hover": {
+            textDecoration: 'underline',
+            color: 'rgb(137, 147, 164)'
+        }
+    }
+});
+
 const TaskItem: React.FunctionComponent<{ taskId: string; onCreateSubTask: (task?: Task) => void }> = ({taskId, onCreateSubTask}) => {
+    const classes = useStyles();
 
-    // console.log('[obabichev] state', );
+    const history = useHistory();
 
-    const task: Task | undefined = useSelector((state: RootState) => find(state?.board?.tasks, {_id: taskId}));
+    const task: Task | undefined = useSelector((state: RootState) => state.board?.tasks[taskId]);
 
     if (!task) {
         return null;
@@ -50,6 +53,14 @@ const TaskItem: React.FunctionComponent<{ taskId: string; onCreateSubTask: (task
 
     // const task = useSelector((state: RootState) => state.board.)
 
+    const onClickLink = (event: React.MouseEvent) => {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        history.push(`/task/${task.key}`);
+    };
 
     return (
         <ExpansionPanel style={{flex: 1}}>
@@ -57,6 +68,9 @@ const TaskItem: React.FunctionComponent<{ taskId: string; onCreateSubTask: (task
                 expandIcon={<ExpandMoreIcon/>}
                 aria-controls="panel1a-content"
                 id="panel1a-header">
+                <a onClick={onClickLink} className={classes.link}>
+                    <Typography>{task.key}</Typography>
+                </a>
                 <Typography>{task.title}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
@@ -64,31 +78,21 @@ const TaskItem: React.FunctionComponent<{ taskId: string; onCreateSubTask: (task
                     <Button color="primary" onClick={() => onCreateSubTask(task)}>Create subtask</Button>
                 </div>
                 {task.subtasks.map(taskId => (
-                    <TaskItem key={task._id} taskId={taskId} onCreateSubTask={onCreateSubTask}/>
+                    <TaskItem key={taskId} taskId={taskId} onCreateSubTask={onCreateSubTask}/>
                 ))}
-                {/*<div>*/}
-                {/*    <div>*/}
-                {/*        <Typography>*/}
-                {/*            {task.description}*/}
-                {/*        </Typography>*/}
-                {/*        <Button color="primary" onClick={() => onCreateSubTask(task)}>Create subtask</Button>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        {task.subtasks.map(taskId => (*/}
-                {/*            <TaskItem key={task._id} taskId={taskId} onCreateSubTask={onCreateSubTask}/>))}*/}
-                {/*    </div>*/}
-                {/*</div>*/}
             </ExpansionPanelDetails>
         </ExpansionPanel>
     );
 };
 
-export const Backlog: React.FunctionComponent<{ board: Board }> = ({board}) => {
+export const TasksList: React.FunctionComponent<{ board: Board }> = ({board}) => {
     const [parentTask, setParentTask] = useState<Task | undefined>();
 
     console.log('[obabichev] parentTask', parentTask);
 
     const modal = useModalRender();
+
+    console.log('[obabichev] board.tasks', board.tasks);
 
     return modal(
         <CreateTaskModal boardId={board._id} parentTask={parentTask}/>,
@@ -101,8 +105,7 @@ export const Backlog: React.FunctionComponent<{ board: Board }> = ({board}) => {
             return <div>
                 <Button color="primary" onClick={() => open()}>Create task</Button>
                 {board.tasks
-                    .filter(task => !task.parent)
-                    .map(task => (<TaskItem key={task._id} taskId={task._id} onCreateSubTask={open}/>))}
+                    .map(taskId => (<TaskItem key={taskId} taskId={taskId} onCreateSubTask={open}/>))}
             </div>;
         }
     );

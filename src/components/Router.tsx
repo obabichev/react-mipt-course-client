@@ -10,6 +10,7 @@ import {DashboardPage} from './dashboard/DashboardPage';
 import {useAuth} from '../App';
 import {Google} from './auth/Google';
 import {BoardPage} from './board/BoardPage';
+import {TaskPage} from './board/TaskPage';
 
 interface RouterProps {
 
@@ -28,6 +29,7 @@ export const Router: React.FunctionComponent<RouterProps> = () => {
         {logged && <Switch>
             <Route path="/dashboard" component={DashboardPage} exact/>
             <Route path="/board/:id" component={BoardPage} exact/>
+            <Route path="/task/:key" component={TaskPage} exact/>
             <Redirect to="/dashboard"/>
         </Switch>}
     </BrowserRouter>;

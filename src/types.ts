@@ -23,7 +23,17 @@ export type Board = {
     owner?: User;
     category?: Dictionary;
     icon?: Dictionary;
-    tasks: Task[]
+    tasks: string[]
+}
+
+export type DetailedBoard = {
+    _id: string;
+    title: string;
+    key: string;
+    owner?: User;
+    category?: Dictionary;
+    icon?: Dictionary;
+    tasks: Task[];
 }
 
 export type Task = {
@@ -32,4 +42,5 @@ export type Task = {
     description: string;
     subtasks: string[];
     parent?: string;
+    key: string;
 }
