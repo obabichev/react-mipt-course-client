@@ -7,17 +7,13 @@ import {Breadcrumb} from '../common/Breadcrumb';
 import {Typography} from '@material-ui/core';
 import {UserIcon} from '../dashboard/UserIcon';
 import {useLoading} from '../../hooks/useLoading';
-import {BOARD_LOADING, BOARDS_LIST_LOADING} from '../../reducers/loading';
+import {BOARD_LOADING} from '../../reducers/loading';
 
 export const BoardPage: React.FunctionComponent<RouteComponentProps<{ id?: string }>> = (props) => {
     const id = props.match.params.id;
     const isLoading = useLoading([BOARD_LOADING]);
 
-    console.log('[obabichev] isLoading', isLoading);
-
     const [board] = useBoard(id);
-
-    console.log('[obabichev] board', board);
 
     return <PageContainer loading={isLoading}>
         {board && <>

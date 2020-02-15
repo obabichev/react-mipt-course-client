@@ -6,6 +6,9 @@ import Button from '@material-ui/core/Button';
 import {useDispatch} from 'react-redux';
 import {createTask} from '../../reducers/board';
 import {Task} from '../../types';
+import {useLoading} from '../../hooks/useLoading';
+import {CREATE_TASK_LOADING} from '../../reducers/loading';
+import {ProgressWrapper} from '../common/ProgressWrapper';
 
 interface CreateTaskModalProps {
     boardId: string,
@@ -13,11 +16,12 @@ interface CreateTaskModalProps {
 }
 
 export const CreateTaskModal: React.FunctionComponent<CreateTaskModalProps> = ({boardId, parentTask}) => {
-    console.log('[obabichev] parentTask', parentTask);
     const [task, setTask] = useState({
         title: '',
         description: ''
     });
+
+    const isLoading = useLoading([CREATE_TASK_LOADING]);
 
     const dispatch = useDispatch();
 
@@ -29,36 +33,38 @@ export const CreateTaskModal: React.FunctionComponent<CreateTaskModalProps> = ({
         dispatch(createTask({...task, boardId, parentTaskId: parentTask?._id || undefined}));
     };
 
-    return <Grid container spacing={2}>
-        <Grid item xs={12} sm={12}>
-            <Typography variant="h5">Create Task</Typography>
+    return <ProgressWrapper loading={isLoading}>
+        <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+                <Typography variant="h5">Create Task</Typography>
+            </Grid>
+            {parentTask && <Grid item xs={12} sm={12}>
+                <Typography variant="h5">Subtask for {parentTask.title}</Typography>
+            </Grid>}
+            <Grid item xs={12} sm={12}>
+                <TextField label="Summary"
+                           name="title"
+                           value={task.title}
+                           onChange={onChange}
+                           variant="outlined"
+                           fullWidth/>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                <TextField
+                    label="Description"
+                    name="description"
+                    value={task.description}
+                    onChange={onChange}
+                    multiline
+                    fullWidth/>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                <Button color="primary"
+                        onClick={onSubmit}
+                        disabled={task.title.length < 2}>
+                    Create
+                </Button>
+            </Grid>
         </Grid>
-        {parentTask && <Grid item xs={12} sm={12}>
-            <Typography variant="h5">Subtask for {parentTask.title}</Typography>
-        </Grid>}
-        <Grid item xs={12} sm={12}>
-            <TextField label="Summary"
-                       name="title"
-                       value={task.title}
-                       onChange={onChange}
-                       variant="outlined"
-                       fullWidth/>
-        </Grid>
-        <Grid item xs={12} sm={12}>
-            <TextField
-                label="Description"
-                name="description"
-                value={task.description}
-                onChange={onChange}
-                multiline
-                fullWidth/>
-        </Grid>
-        <Grid item xs={12} sm={12}>
-            <Button color="primary"
-                    onClick={onSubmit}
-                    disabled={task.title.length < 2}>
-                Create
-            </Button>
-        </Grid>
-    </Grid>;
+    </ProgressWrapper>;
 };

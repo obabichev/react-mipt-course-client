@@ -1,6 +1,6 @@
 import React from 'react';
 import {Board} from '../../types';
-import {Table, Theme} from '@material-ui/core';
+import {Table} from '@material-ui/core';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';

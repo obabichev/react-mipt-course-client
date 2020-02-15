@@ -7,8 +7,6 @@ export const useBoard = (boardId?: string) => {
     const board = useSelector((state: RootState) => state.board?.board);
     const dispatch = useDispatch();
 
-    console.log('[obabichev] board', board);
-
     useEffect(() => {
         if (boardId) {
             dispatch(fetchBoard(boardId));

@@ -1,7 +1,8 @@
 import {createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
 import {Board, DetailedBoard, Task} from '../types';
 import {authFetch} from '../App';
-import {BOARD_LOADING, finishLoading, startLoading} from './loading';
+import {BOARD_LOADING, CREATE_TASK_LOADING, finishLoading, startLoading} from './loading';
+import {closeModal, CREATE_TASK_MODAL} from './modal';
 
 const normalizeTasks = (tasks?: Task[]) => {
     if (!tasks) {
@@ -55,7 +56,6 @@ const board = createSlice({
 export const {boardAction} = board.actions;
 
 export const fetchBoard = (boardId: string) => (dispatch: Dispatch) => {
-    console.log('[obabichev] fetch board', boardId);
     dispatch(startLoading(BOARD_LOADING));
     dispatch(boardAction(null));
     fetch(`/board/${boardId}`)
@@ -72,6 +72,7 @@ export const fetchBoard = (boardId: string) => (dispatch: Dispatch) => {
 };
 
 export const createTask = (task: Partial<Task> & { boardId: string, parentTaskId?: string }) => (dispatch: Dispatch) => {
+    dispatch(startLoading(CREATE_TASK_LOADING));
     authFetch('/task', {
         method: 'POST',
         headers: {
@@ -82,6 +83,10 @@ export const createTask = (task: Partial<Task> & { boardId: string, parentTaskId
         .then(r => r.json())
         .then(board => {
             dispatch(boardAction(board));
+            dispatch(closeModal(CREATE_TASK_MODAL))
+        })
+        .finally(() => {
+            dispatch(finishLoading(CREATE_TASK_LOADING))
         })
 };
 

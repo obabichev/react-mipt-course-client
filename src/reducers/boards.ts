@@ -3,6 +3,7 @@ import {Board} from '../types';
 import {RootState} from './index';
 import {authFetch} from '../App';
 import {startLoading, finishLoading, BOARDS_LIST_LOADING, CREATE_BOARD_LOADING} from './loading';
+import {closeModal, CREATE_BOARD_MODAL} from './modal';
 
 const boards = createSlice({
     name: 'boards',
@@ -47,6 +48,7 @@ export const createBoard = (board: Partial<Board>) => (dispatch: Dispatch, getSt
         .then(data => {
             const boards = getState().boards;
             dispatch(boardsList([...boards, data]));
+            dispatch(closeModal(CREATE_BOARD_MODAL))
         })
         .catch(error => {
             console.log('error', error);

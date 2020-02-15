@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import {useModalRender} from '../../hooks/useModalRender';
-import {CreateTaskModal} from './CreateTaskModal';
 import {Board, Task} from '../../types';
 import {Typography} from '@material-ui/core';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -13,6 +12,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../reducers';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {useHistory} from 'react-router';
+import {CREATE_TASK_MODAL} from '../../reducers/modal';
 
 const ExpansionPanelSummary = withStyles({
     root: {
@@ -86,36 +86,16 @@ const TaskItem: React.FunctionComponent<{ taskId: string; onCreateSubTask: (task
 };
 
 export const TasksList: React.FunctionComponent<{ board: Board }> = ({board}) => {
-    const [parentTask, setParentTask] = useState<Task | undefined>();
-
-    console.log('[obabichev] parentTask', parentTask);
-
-    const modal = useModalRender();
-
-    console.log('[obabichev] board.tasks', board.tasks);
+    const modal = useModalRender(CREATE_TASK_MODAL);
 
     return modal(
-        <CreateTaskModal boardId={board._id} parentTask={parentTask}/>,
-        (_open) => {
-            const open = (task?: Task) => {
-                setParentTask(task);
-                _open();
-            };
-
-            return <div>
-                <Button color="primary" onClick={() => open()}>Create task</Button>
-                {board.tasks
-                    .map(taskId => (<TaskItem key={taskId} taskId={taskId} onCreateSubTask={open}/>))}
-            </div>;
-        }
+        (open) => (<div>
+            <Button color="primary" onClick={() => open({boardId: board._id})}>Create task</Button>
+            {board.tasks
+                .map(taskId => (
+                    <TaskItem key={taskId} taskId={taskId}
+                              onCreateSubTask={(parentTask) => open({boardId: board._id, parentTask})}/>
+                ))}
+        </div>)
     );
-
-    // return <div>
-    //     {modal(
-    //         <CreateTaskModal boardId={board._id}/>,
-    //         (open) => <Button color="primary" onClick={open}>Create task</Button>
-    //     )}
-    //
-    //     {board.tasks.map(task => (<TaskItem key={task._id} task={task}/>))}
-    // </div>
 };

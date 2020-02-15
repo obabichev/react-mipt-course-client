@@ -1,5 +1,5 @@
 import React from 'react';
-import {createStyles, LinearProgress, Theme} from '@material-ui/core';
+import {createStyles, LinearProgress} from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';

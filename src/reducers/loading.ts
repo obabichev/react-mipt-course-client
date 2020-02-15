@@ -4,6 +4,7 @@ import {omit} from 'lodash';
 export const BOARDS_LIST_LOADING = 'BOARDS_LIST_LOADING';
 export const BOARD_LOADING = 'BOARD_LOADING';
 export const CREATE_BOARD_LOADING = 'CREATE_BOARD_LOADING';
+export const CREATE_TASK_LOADING = 'CREATE_TASK_LOADING';
 
 const loading = createSlice({
     name: 'loading',
