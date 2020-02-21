@@ -1,5 +1,7 @@
-import {createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Dictionary} from '../types';
+import {errorThunk} from '../utils/errorThunk';
+import {dictionaryService} from '../service/dictionary';
 
 const dictionaries = createSlice({
     name: 'dictionaries',
@@ -17,15 +19,9 @@ const dictionaries = createSlice({
 
 export const {setDictionary} = dictionaries.actions;
 
-export const fetchDictionaries = (name: 'categories' | 'board-icons') => (dispatch: Dispatch) => {
-    fetch(`/dictionaries/${name}`)
-        .then(r => r.json())
-        .then(items => {
-            dispatch(setDictionary({name, items}));
-        })
-        .catch(error => {
-            console.log('error', error);
-        })
-};
+export const fetchDictionaries = (name: 'categories' | 'board-icons') => errorThunk(
+    dispatch => dictionaryService.dictionary(name)
+        .then(items => dispatch(setDictionary({name, items})))
+);
 
 export default dictionaries.reducer;
