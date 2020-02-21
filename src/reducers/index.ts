@@ -6,6 +6,7 @@ import auth from './auth';
 import dictionaries from './dictionaries';
 import loading from './loading';
 import modal from './modal';
+import error from './error';
 
 const rootReducer = combineReducers({
     boards,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
     auth,
     dictionaries,
     loading,
-    modal
+    modal,
+    error
 });
 
 export type RootState = ReturnType<typeof rootReducer>

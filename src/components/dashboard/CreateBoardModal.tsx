@@ -15,12 +15,16 @@ import InputLabel from '@material-ui/core/InputLabel';
 import {ProgressWrapper} from '../common/ProgressWrapper';
 import {useLoading} from '../../hooks/useLoading';
 import {CREATE_BOARD_LOADING} from '../../reducers/loading';
+import {useDispatchThunk} from '../../hooks/useDispatchThunk';
+import {first} from 'lodash';
+
 
 export const CreateBoardModal = () => {
     const [board, setBoard] = useState<Partial<Board>>({
         title: '',
         key: '',
     });
+    const [validation, setValidation] = useState<{ [key in string]: { messages: string[] } }>({});
 
     const isLoading = useLoading([CREATE_BOARD_LOADING]);
 
@@ -46,7 +50,7 @@ export const CreateBoardModal = () => {
         boardIcons.find(icon => icon.key === value)
     );
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatchThunk();
 
     useEffect(() => {
         dispatch(fetchDictionaries('categories'));
@@ -65,8 +69,15 @@ export const CreateBoardModal = () => {
         }
     }, [boardIcons, board.icon, updateField]);
 
+    const errorMessage = (key: string) => {
+        return first(validation[key]?.messages) || '';
+    };
+
     const onCreateBoard = () => {
-        dispatch(createBoard(board));
+        dispatch(createBoard(board))
+            .catch(err => {
+                setValidation(err.validation);
+            })
     };
 
     return <ProgressWrapper loading={isLoading}>
@@ -102,6 +113,8 @@ export const CreateBoardModal = () => {
                     variant="outlined"
                     fullWidth
                     margin="dense"
+                    error={!!errorMessage('title')}
+                    helperText={errorMessage('title')}
                 />
             </Grid>
             <Grid item xs={11} sm={5}>
@@ -114,6 +127,8 @@ export const CreateBoardModal = () => {
                     variant="outlined"
                     fullWidth
                     margin="dense"
+                    error={!!errorMessage('key')}
+                    helperText={errorMessage('key')}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>

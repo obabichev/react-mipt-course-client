@@ -5,6 +5,7 @@ import store from './store';
 import {Provider} from 'react-redux';
 import {authService} from './service/auth';
 import {createAuthProvider} from 'react-token-auth';
+import {ErrorSnackbar} from './components/common/ErrorSnackbar';
 
 
 export const [useAuth, authFetch, login, logout] =
@@ -20,7 +21,9 @@ const App: React.FC = () => {
     return (
         <div className="App">
             <Provider store={store}>
-                <Router/>
+                <ErrorSnackbar>
+                    <Router/>
+                </ErrorSnackbar>
             </Provider>
         </div>
     );

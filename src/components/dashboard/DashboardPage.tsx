@@ -30,7 +30,7 @@ export const DashboardPage: React.FunctionComponent<DashboardProps> = () => {
     return <PageContainer loading={isLoading}>
         <Logout/>
 
-        {modal(open => <Button onClick={open}>Add Board</Button>)}
+        {modal(open => <Button onClick={() => open()}>Add Board</Button>)}
 
         <BoardsTable boards={boards}/>
     </PageContainer>;

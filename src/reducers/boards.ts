@@ -1,9 +1,12 @@
-import {createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
+import {AnyAction, createSlice, Dispatch, PayloadAction, ThunkAction} from '@reduxjs/toolkit';
 import {Board} from '../types';
 import {RootState} from './index';
 import {authFetch} from '../App';
 import {startLoading, finishLoading, BOARDS_LIST_LOADING, CREATE_BOARD_LOADING} from './loading';
 import {closeModal, CREATE_BOARD_MODAL} from './modal';
+import {wrapFetch} from '../utils/wrapFetch';
+import {ThunkResult} from './types';
+import {errorThunk} from '../utils/errorThunk';
 
 const boards = createSlice({
     name: 'boards',
@@ -15,47 +18,35 @@ const boards = createSlice({
 
 export const {boardsList} = boards.actions;
 
-export const fetchBoardsList = () => (dispatch: Dispatch) => {
+export const fetchBoardsList = () => errorThunk((dispatch: Dispatch) => {
     dispatch(startLoading(BOARDS_LIST_LOADING));
-    fetch('/board')
+    return fetch('/board')
         .then(r => r.json())
         .then(data => {
             dispatch(boardsList(data));
         })
-        .catch(error => {
-            console.log('error', error);
-        })
         .finally(() => {
             dispatch(finishLoading(BOARDS_LIST_LOADING));
         });
-};
+});
 
-export const createBoard = (board: Partial<Board>) => (dispatch: Dispatch, getState: () => RootState) => {
+export const createBoard = (board: Partial<Board>) => errorThunk((dispatch: Dispatch, getState: () => RootState) => {
     dispatch(startLoading(CREATE_BOARD_LOADING));
-    authFetch('/board', {
+    return wrapFetch(authFetch)('/board', {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
         },
         body: JSON.stringify(board)
     })
-        .then(r => {
-            if (r.status !== 200) {
-                throw r.statusText;
-            }
-            return r.json()
-        })
         .then(data => {
             const boards = getState().boards;
             dispatch(boardsList([...boards, data]));
             dispatch(closeModal(CREATE_BOARD_MODAL))
         })
-        .catch(error => {
-            console.log('error', error);
-        })
         .finally(() => {
             dispatch(finishLoading(CREATE_BOARD_LOADING));
         })
-};
+});
 
 export default boards.reducer;
