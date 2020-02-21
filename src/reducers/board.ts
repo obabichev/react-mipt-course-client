@@ -1,8 +1,11 @@
-import {createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Board, DetailedBoard, Task} from '../types';
-import {authFetch} from '../App';
-import {BOARD_LOADING, CREATE_TASK_LOADING, finishLoading, startLoading} from './loading';
+import {BOARD_LOADING} from './loading';
 import {closeModal, CREATE_TASK_MODAL} from './modal';
+import {errorThunk} from '../utils/errorThunk';
+import {loadingThunk} from '../utils/loadingThunk';
+import {boardService} from '../service/board';
+import {taskService} from '../service/task';
 
 const normalizeTasks = (tasks?: Task[]) => {
     if (!tasks) {
@@ -33,61 +36,20 @@ const board = createSlice({
                 tasks: normalizeTasks(action.payload.tasks)
             }
         }),
-        /*createdTask: ((state, action: PayloadAction<DetailedBoard>) => {
-            if (!state) {
-                return state;
-            }
-            return {
-                ...state,
-                tasks: {
-                    ...state.tasks,
-                    [action.payload._id]: action.payload
-                }
-            }
-
-            // return {
-            //     ...state,
-            //     tasks: [...state.tasks, action.payload]
-            // }
-        })*/
     }
 });
 
 export const {boardAction} = board.actions;
 
-export const fetchBoard = (boardId: string) => (dispatch: Dispatch) => {
-    dispatch(startLoading(BOARD_LOADING));
-    dispatch(boardAction(null));
-    fetch(`/board/${boardId}`)
-        .then(r => r.json())
-        .then(data => {
-            dispatch(boardAction(data));
-        })
-        .catch(error => {
-            console.log('error', error);
-        })
-        .finally(() => {
-            dispatch(finishLoading(BOARD_LOADING))
-        })
-};
+export const fetchBoard = (boardId: string) => errorThunk(loadingThunk(BOARD_LOADING)(
+    dispatch => boardService.board(boardId).then(board => dispatch(boardAction(board)))
+));
 
-export const createTask = (task: Partial<Task> & { boardId: string, parentTaskId?: string }) => (dispatch: Dispatch) => {
-    dispatch(startLoading(CREATE_TASK_LOADING));
-    authFetch('/task', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-        },
-        body: JSON.stringify(task)
+export const createTask = (task: Partial<Task> & { boardId: string, parentTaskId?: string }) => errorThunk(loadingThunk(BOARD_LOADING)(
+    dispatch => taskService.postTask(task).then(board => {
+        dispatch(boardAction(board));
+        dispatch(closeModal(CREATE_TASK_MODAL))
     })
-        .then(r => r.json())
-        .then(board => {
-            dispatch(boardAction(board));
-            dispatch(closeModal(CREATE_TASK_MODAL))
-        })
-        .finally(() => {
-            dispatch(finishLoading(CREATE_TASK_LOADING))
-        })
-};
+));
 
 export default board.reducer;

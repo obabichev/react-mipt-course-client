@@ -2,9 +2,9 @@ import {wrapFetch} from '../utils/wrapFetch';
 import {Board} from '../types';
 import {authFetch} from '../App';
 
-const boards = async () => {
-    return wrapFetch(fetch)('/board')
-};
+const boards = async () => wrapFetch(fetch)('/board');
+
+const board = (boardId: string) => wrapFetch(fetch)(`/board/${boardId}`);
 
 const postBoard = async (board: Partial<Board>) => {
     return wrapFetch(authFetch)('/board', {
@@ -18,5 +18,6 @@ const postBoard = async (board: Partial<Board>) => {
 
 export const boardService = {
     boards,
+    board,
     postBoard
 };
