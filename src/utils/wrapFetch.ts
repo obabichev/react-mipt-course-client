@@ -8,7 +8,7 @@ export const wrapFetch = (_fetch: typeof fetch) => {
         const data = await response.json();
 
         if (response.status === 200) {
-            return await response.json();
+            return data;
         }
 
         if (data.validation) {

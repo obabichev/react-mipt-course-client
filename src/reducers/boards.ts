@@ -7,6 +7,8 @@ import {closeModal, CREATE_BOARD_MODAL} from './modal';
 import {wrapFetch} from '../utils/wrapFetch';
 import {ThunkResult} from './types';
 import {errorThunk} from '../utils/errorThunk';
+import {loadingThunk} from '../utils/loadingThunk';
+import {boardService} from '../service/board';
 
 const boards = createSlice({
     name: 'boards',
@@ -18,17 +20,12 @@ const boards = createSlice({
 
 export const {boardsList} = boards.actions;
 
-export const fetchBoardsList = () => errorThunk((dispatch: Dispatch) => {
-    dispatch(startLoading(BOARDS_LIST_LOADING));
-    return fetch('/board')
-        .then(r => r.json())
-        .then(data => {
-            dispatch(boardsList(data));
-        })
-        .finally(() => {
-            dispatch(finishLoading(BOARDS_LIST_LOADING));
-        });
-});
+export const fetchBoardsList = () => errorThunk(loadingThunk(BOARDS_LIST_LOADING)(
+    (dispatch: Dispatch) => {
+        return boardService.boards()
+            .then(boards => dispatch(boardsList(boards)))
+    }
+));
 
 export const createBoard = (board: Partial<Board>) => errorThunk((dispatch: Dispatch, getState: () => RootState) => {
     dispatch(startLoading(CREATE_BOARD_LOADING));
