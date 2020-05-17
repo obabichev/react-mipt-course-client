@@ -2,4 +2,5 @@
 /board/* https://react-mipt-course-server.herokuapp.com/board/:splat 200!
 /dictionaries/* https://react-mipt-course-server.herokuapp.com/dictionaries/:splat 200!
 /task/* https://react-mipt-course-server.herokuapp.com/task/:splat 200!
+/images/* https://react-mipt-course-server.herokuapp.com/images/:splat 200!
 /* /index.html 200
