@@ -45,11 +45,12 @@ export const fetchBoard = (boardId: string) => errorThunk(loadingThunk(BOARD_LOA
     dispatch => boardService.board(boardId).then(board => dispatch(boardAction(board)))
 ));
 
-export const createTask = (task: Partial<Task> & { boardId: string, parentTaskId?: string }) => errorThunk(loadingThunk(BOARD_LOADING)(
-    dispatch => taskService.postTask(task).then(board => {
-        dispatch(boardAction(board));
-        dispatch(closeModal(CREATE_TASK_MODAL))
-    })
-));
+export const createTask = (task: Partial<Task> & { boardId: string, parentTaskId?: string }) =>
+    errorThunk(loadingThunk(BOARD_LOADING)(
+        (dispatch) => taskService.postTask(task).then(board => {
+            dispatch(boardAction(board));
+            dispatch(closeModal(CREATE_TASK_MODAL))
+        })
+    ));
 
 export default board.reducer;

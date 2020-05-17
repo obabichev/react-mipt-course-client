@@ -1,0 +1,2 @@
+/api/* https://react-mipt-course-server.herokuapp.com/api/:splat 200!
+/* /index.html 200
